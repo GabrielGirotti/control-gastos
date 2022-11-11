@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Header from "./components/Header/Header";
 import ListadoGastos from "./components/ListadoGastos/ListadoGastos";
 import Modal from "./components/Modal/Modal";
+import { generarId } from "./functions/functions";
 import IconoNuevoGasto from "./img/nuevo-gasto.svg";
 
 function App() {
@@ -33,7 +34,15 @@ function App() {
   };
 
   const guardarGasto = (gasto) => {
-    setGastos([...gastos, gasto]);
+    if (gasto.id) {
+      const gastosActualizados = gastos.map((gastoState) =>
+        gastoState.id === gasto.id ? gasto : gastoState
+      );
+      setGastos(gastosActualizados);
+    } else {
+      gasto.id = generarId();
+      setGastos([...gastos, gasto]);
+    }
   };
 
   return (

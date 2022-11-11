@@ -3,26 +3,29 @@ import BtnCierre from "../../img/cerrar.svg";
 import Gasto from "../ListadoGastos/Gasto/Gasto";
 import Aviso from "../NuevoPresupuesto/Aviso/Aviso";
 
-const Modal = ({ setModal, animarForm, setAnimarForm, guardarGasto, editarGasto }) => {
+const Modal = ({
+  setModal,
+  animarForm,
+  setAnimarForm,
+  guardarGasto,
+  editarGasto,
+}) => {
   const [nombreGasto, setNombreGasto] = useState("");
   const [monto, setMonto] = useState(0);
   const [categoria, setCategoria] = useState("");
 
   const [msje, setMsje] = useState("");
 
+  const [id, setId] = useState("");
+
   useEffect(() => {
     if (Object.keys(editarGasto).length > 0) {
-      setNombreGasto(editarGasto.nombreGasto)
+      setNombreGasto(editarGasto.nombreGasto);
+      setMonto(editarGasto.monto);
+      setCategoria(editarGasto.categoria);
+      setId(editarGasto.id);
     }
-    
-  }, [editarGasto])
-  
-
-  // Generando ID para el objeto de gasto
-  const random = Math.random().toString(36).substring(2);
-  const fechaRandom = Date.now().toString(36);
-
-  const id = random + fechaRandom;
+  }, [editarGasto]);
 
   // Generando fecha para el objeto de gasto
   const fechaDate = new Date();
@@ -72,7 +75,9 @@ const Modal = ({ setModal, animarForm, setAnimarForm, guardarGasto, editarGasto 
         className={`formulario ${animarForm ? "animar" : "cerrar"}`}
         onSubmit={handleSubmit}
       >
-        <legend>{Object.keys(editarGasto).length > 0 ? 'Editar Gasto' : 'Nuevo gasto'}</legend>
+        <legend>
+          {Object.keys(editarGasto).length > 0 ? "Editar Gasto" : "Nuevo gasto"}
+        </legend>
         <div className="campo">
           <label htmlFor="nombre">Nombre Gasto</label>
           <input
@@ -116,7 +121,10 @@ const Modal = ({ setModal, animarForm, setAnimarForm, guardarGasto, editarGasto 
             <option value="suscripciones">Suscripciones</option>
           </select>
 
-          <input type="submit" value={Object.keys(editarGasto).length > 0 ? 'Editar' : 'Guardar'} />
+          <input
+            type="submit"
+            value={Object.keys(editarGasto).length > 0 ? "Editar" : "Guardar"}
+          />
         </div>
 
         {msje && <Aviso tipo="error">{msje}</Aviso>}
