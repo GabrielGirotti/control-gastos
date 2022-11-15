@@ -9,6 +9,7 @@ const Modal = ({
   setAnimarForm,
   guardarGasto,
   editarGasto,
+  setEditarGasto
 }) => {
   const [nombreGasto, setNombreGasto] = useState("");
   const [monto, setMonto] = useState(0);
@@ -43,6 +44,7 @@ const Modal = ({
     setTimeout(() => {
       setModal(false);
     }, 300);
+    setEditarGasto({})
   };
 
   const handleSubmit = (e) => {

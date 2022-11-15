@@ -13,7 +13,20 @@ function App() {
 
   const [editarGasto, setEditarGasto] = useState({});
 
+  const [elimiar, setElimiar] = useState({});
+
   const [animarForm, setAnimarForm] = useState(false);
+
+  useEffect(
+    () => {
+      if (Object.keys(elimiar).length > 0){
+      const gastosVigentes = gastos.filter((gasto) => elimiar.id !== gasto.id);
+      setGastos(gastosVigentes);
+      setElimiar({})
+    }
+    },
+    [elimiar]
+  );
 
   useEffect(() => {
     if (Object.keys(editarGasto).length > 0) {
@@ -58,7 +71,11 @@ function App() {
       {presupuestoValido && (
         <>
           <main>
-            <ListadoGastos gastos={gastos} setEditarGasto={setEditarGasto} />
+            <ListadoGastos
+              gastos={gastos}
+              setEditarGasto={setEditarGasto}
+              setElimiar={setElimiar}
+            />
           </main>
           <div className="nuevo-gasto">
             <img
@@ -77,6 +94,7 @@ function App() {
           setAnimarForm={setAnimarForm}
           guardarGasto={guardarGasto}
           editarGasto={editarGasto}
+          setEditarGasto={setEditarGasto}
         />
       )}
     </div>
