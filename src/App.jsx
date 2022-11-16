@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Filtros from "./components/Filtros/Filtros";
 import Header from "./components/Header/Header";
 import ListadoGastos from "./components/ListadoGastos/ListadoGastos";
 import Modal from "./components/Modal/Modal";
@@ -6,27 +7,54 @@ import { generarId } from "./functions/functions";
 import IconoNuevoGasto from "./img/nuevo-gasto.svg";
 
 function App() {
-  const [presupuesto, setPresupuesto] = useState(0);
-  const [gastos, setGastos] = useState([]);
+  const [presupuesto, setPresupuesto] = useState(
+    localStorage.getItem("presupuesto") > 0
+      ? Number(localStorage.getItem("presupuesto"))
+      : 0
+  );
+  const [gastos, setGastos] = useState(
+    JSON.parse(localStorage.getItem("gastos"))
+      ? JSON.parse(localStorage.getItem("gastos"))
+      : []
+  );
   const [presupuestoValido, setPresupuestoValido] = useState(false);
   const [modal, setModal] = useState(false);
-
   const [editarGasto, setEditarGasto] = useState({});
-
   const [elimiar, setElimiar] = useState({});
-
   const [animarForm, setAnimarForm] = useState(false);
+  const [filtro, setFiltro] = useState("");
+  const [gastosFiltrados, setGastosFiltrados] = useState([]);
 
-  useEffect(
-    () => {
-      if (Object.keys(elimiar).length > 0){
+  useEffect(() => {
+    Number(localStorage.setItem("presupuesto", presupuesto ?? 0));
+  }, [presupuesto]);
+
+  useEffect(() => {
+    localStorage.setItem("gastos", JSON.stringify(gastos) ?? []);
+  }, [gastos]);
+
+  useEffect(() => {
+    const presuLS = Number(localStorage.getItem("presupuesto"));
+    presuLS > 0 ? setPresupuestoValido(true) : setPresupuestoValido(false);
+  }, []);
+
+  useEffect(() => {
+    if (filtro) {
+      const gastosFiltrados = gastos.filter(
+        (gasto) => gasto.categoria === filtro
+      );
+
+      setGastosFiltrados(gastosFiltrados);
+    }
+  }, [filtro]);
+
+  useEffect(() => {
+    if (Object.keys(elimiar).length > 0) {
       const gastosVigentes = gastos.filter((gasto) => elimiar.id !== gasto.id);
       setGastos(gastosVigentes);
-      setElimiar({})
+      setElimiar({});
     }
-    },
-    [elimiar]
-  );
+  }, [elimiar]);
 
   useEffect(() => {
     if (Object.keys(editarGasto).length > 0) {
@@ -71,10 +99,14 @@ function App() {
       {presupuestoValido && (
         <>
           <main>
+            <Filtros filtro={filtro} setFiltro={setFiltro} />
+
             <ListadoGastos
               gastos={gastos}
               setEditarGasto={setEditarGasto}
               setElimiar={setElimiar}
+              filtro={filtro}
+              gastosFiltrados={gastosFiltrados}
             />
           </main>
           <div className="nuevo-gasto">
